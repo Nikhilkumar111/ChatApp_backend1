@@ -21,7 +21,7 @@ const PORT = process.env.PORT || ENV.PORT || 3000;
 
 app.use(express.json({ limit: "5mb" }));
 app.use(cors({
-  origin: ["http://localhost:5173","https://chatapp-backend-4-15do.onrender.com"],
+  origin: ["http://localhost:5173","https://chat-app-frontend-brown-nine.vercel.app/"],
   credentials: true
 }));
 app.use(cookieParser());
