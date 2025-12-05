@@ -1,41 +1,33 @@
-import express from "express";
-import cookieParser from "cookie-parser";
-import path from "path";
-import cors from "cors";
+import { app, server } from "./lib/socket.js";
 import dotenv from "dotenv";
-dotenv.config();
-
+import cookieParser from "cookie-parser";
 import authRoutes from "./routes/auth.route.js";
 import messageRoutes from "./routes/message.route.js";
 import { connectDB } from "./db/db.js";
-import { ENV } from "./lib/env.js";
-import { app, server } from "./lib/socket.js";
 
-const __dirname = path.resolve();
+dotenv.config();
 
-const PORT = process.env.PORT || ENV.PORT || 3000;
-
-// -------------------- CORS FIX --------------------
-app.use(cors({
-  origin: [
-    "http://localhost:5173",
-    "https://chat-app-frontend-brown-nine.vercel.app",
-  ],
-  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization"],
-  credentials: true,
-}));
-
-app.options("*", cors());
-// --------------------------------------------------
-
-app.use(express.json({ limit: "5mb" }));
+// Middleware
 app.use(cookieParser());
 
+// Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/messages", messageRoutes);
 
+// Optional: Serve frontend in production
+// import path from "path";
+// if (process.env.NODE_ENV === "production") {
+//   const __dirname = path.resolve();
+//   app.use(express.static(path.join(__dirname, "../frontend/dist")));
+//   app.get("*", (_, res) => {
+//     res.sendFile(path.join(__dirname, "../frontend/dist/index.html"));
+//   });
+// }
+
+// Start server
+const PORT = process.env.PORT || 3000;
+
 server.listen(PORT, () => {
-  console.log("Server running on port :" + PORT);
+  console.log(`Server running on port ${PORT}`);
   connectDB();
 });
